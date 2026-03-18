@@ -1,0 +1,31 @@
+# Example pipeline config for dag_builder
+
+# Airflow/DAG metadata
+# dag_id is used as the dlt pipeline name too
+# You can override this path via PIPELINE_CONFIG_PATH.
+dag_id: "example_pipeline"
+
+airflow_conn_id: "impala_conn"
+
+# Your GraphQL API endpoint (must accept cursor + since variables)
+api_url: "https://api.example.com/graphql"
+
+# The target table name for dlt (used as the resource name)
+# This will create/merge into this table in Impala.
+table_name: "example_table"
+
+# GraphQL query (must return `nodes` + `pageInfo` for pagination)
+graphql_query: |
+  query($cursor: String, $since: DateTime!) {
+    analytics(cursor: $cursor, since: $since) {
+      nodes {
+        id
+        updated_at
+        # ... your fields ...
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }

@@ -1,0 +1,17 @@
+[MASTER]
+# Pick a configuration file for pylint. This is a lightweight starting point.
+ignore=build,dist,*.egg-info
+
+[MESSAGES CONTROL]
+# Enable all messages by default; disable only the ones we intentionally allow.
+disable=
+    missing-docstring,
+    invalid-name,
+    too-few-public-methods
+
+[FORMAT]
+max-line-length=100
+
+[REPORTS]
+# Disable the full report, we only care about the score and messages.
+reports=no

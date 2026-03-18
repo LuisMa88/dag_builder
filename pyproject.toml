@@ -1,0 +1,15 @@
+[project]
+name = "dag_builder"
+version = "0.1.0"
+dependencies = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pydantic>=2.0.0",
+    "dlt[sqlalchemy]",
+    "impyla",
+    "pyyaml",
+    "requests",
+    "apache-airflow",
+    "pylint"
+]

@@ -142,3 +142,6 @@ venv/*
 *.pyc
 *.pyd
 
+PRINTABLE.md
+PRINTABLE.pdf
+scripts/*

@@ -1,5 +1,9 @@
 """Tests for dag_builder.config."""
 import os
+import tempfile
+
+# Ensure the logger writes to a temporary file during tests
+os.environ.setdefault("DAG_BUILDER_LOG_FILE", os.path.join(tempfile.gettempdir(), "dag_builder_test.log"))
 
 import pytest
 import yaml

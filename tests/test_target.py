@@ -1,4 +1,10 @@
 """Tests for dag_builder.target."""
+import os
+import tempfile
+
+# Ensure the logger writes to a temporary file during tests
+os.environ.setdefault("DAG_BUILDER_LOG_FILE", os.path.join(tempfile.gettempdir(), "dag_builder_test.log"))
+
 from dag_builder.target import ImpalaTarget
 
 def test_impala_uri_generation(mocker):

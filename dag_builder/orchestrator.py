@@ -5,7 +5,11 @@ from airflow.models import BaseOperator
 
 from .config import PipelineConfig
 from .fetcher import GraphQLFetcher
+from .logger import DagBuilderLogger
 from .target import ImpalaTarget
+
+
+logger = DagBuilderLogger.get_logger(__name__)
 
 
 class DltGraphqlToImpalaOperator(BaseOperator):
@@ -18,6 +22,8 @@ class DltGraphqlToImpalaOperator(BaseOperator):
         self.config_path = config_path
 
     def execute(self, context):
+        logger.info("Starting DAG run; config_path=%s", self.config_path)
+
         # 1. Composition setup
         cfg = PipelineConfig(self.config_path)
         fetcher = GraphQLFetcher(
@@ -28,6 +34,7 @@ class DltGraphqlToImpalaOperator(BaseOperator):
         target = ImpalaTarget(conn_id=cfg.get('airflow_conn_id'))
 
         # 2. dlt Pipeline Initialization
+        logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="sqlalchemy",
@@ -47,5 +54,6 @@ class DltGraphqlToImpalaOperator(BaseOperator):
 
         # 4. Run
         load_info = pipeline.run(resource)
+        logger.info("Load complete: %s", load_info)
         self.log.info(f"Load complete: {load_info}")
         return str(load_info)

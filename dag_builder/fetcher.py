@@ -3,6 +3,11 @@
 import dlt
 from dlt.sources.helpers import requests
 
+from .logger import DagBuilderLogger
+
+
+logger = DagBuilderLogger.get_logger(__name__)
+
 
 class GraphQLFetcher:  # pylint: disable=too-few-public-methods
     """Fetches paginated records from a GraphQL API and yields record batches."""
@@ -11,6 +16,7 @@ class GraphQLFetcher:  # pylint: disable=too-few-public-methods
         self.url = url
         self.headers = {"Authorization": f"Bearer {token}"}
         self.query = query
+        logger.debug("Initialized GraphQLFetcher for URL %s", self.url)
 
     def fetch_records(self, last_value=dlt.sources.incremental("updated_at")):
         """Yield pages of records from the configured GraphQL endpoint.
@@ -21,12 +27,14 @@ class GraphQLFetcher:  # pylint: disable=too-few-public-methods
         cursor = None
         has_next = True
         since = last_value.start_value
+        logger.info("Starting fetch from %s (since=%s)", self.url, since)
 
         while has_next:
             payload = {
                 'query': self.query,
                 'variables': {'cursor': cursor, 'since': since}
             }
+            logger.debug("Posting GraphQL payload: %s", payload)
             response = requests.post(self.url, json=payload, headers=self.headers)
             response.raise_for_status()
 
@@ -36,6 +44,7 @@ class GraphQLFetcher:  # pylint: disable=too-few-public-methods
             resource_data = next(iter(data.values()), {})
 
             nodes = resource_data.get("nodes", [])
+            logger.info("Fetched %s records (cursor=%s)", len(nodes), cursor)
             if nodes:
                 yield nodes
 

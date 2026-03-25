@@ -1,0 +1,86 @@
+# Docker ignore file for DAG Builder
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Airflow specific
+airflow.cfg
+airflow.db
+*.pid
+
+# DAG Builder specific
+dag_builder.log
+PRINTABLE.md
+PRINTABLE.pdf
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Documentation docs
+docs/_build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Exclude project directories that interfere with package build
+dags/
+tests/
+scripts/
+build/
+venv/

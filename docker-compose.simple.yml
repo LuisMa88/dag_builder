@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  airflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+      # DAG Builder environment variables
+      APP_API_TOKEN: ${APP_API_TOKEN:-your_api_token_here}
+      DAG_BUILDER_LOG_FILE: /opt/airflow/logs/dag_builder.log
+    ports:
+      - 8080:8080
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./example:/opt/airflow/example
+      - airflow-db:/opt/airflow
+    command: >
+      bash -c "
+      airflow db upgrade &&
+      airflow users create -r Admin -u admin -e admin@example.com -f admin -l user -p admin ||
+      echo 'User already exists' &&
+      airflow webserver
+      "
+
+volumes:
+  airflow-db:

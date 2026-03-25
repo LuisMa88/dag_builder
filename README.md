@@ -61,6 +61,46 @@ export APP_API_TOKEN="<your_token>"
 
 ---
 
+## 🐳 Docker Setup
+
+### Quick Start with Docker
+
+```bash
+# Production setup (PostgreSQL + Redis + Celery)
+docker-compose up -d
+
+# Development setup (SQLite only)
+docker-compose -f docker-compose.simple.yml up -d
+
+# Access Airflow
+# URL: http://localhost:8080
+# Username: admin
+# Password: admin
+```
+
+### Setup Script
+
+```bash
+# Linux/Mac
+chmod +x setup.sh && ./setup.sh
+
+# Windows
+setup.bat
+```
+
+### Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| Airflow Web UI | 8080 | Main Airflow interface |
+| Flower | 5555 | Celery monitoring |
+| PostgreSQL | 5432 | Production database |
+| Redis | 6379 | Message broker |
+
+For detailed Docker instructions, see [docker/README.md](docker/README.md).
+
+---
+
 ## 🧩 Configuration
 
 ### Config file location

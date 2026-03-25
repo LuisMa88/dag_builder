@@ -1,0 +1,35 @@
+[
+  {
+    "connection_id": "impala_default",
+    "conn_type": "impala",
+    "description": "Default Impala connection for DAG Builder",
+    "host": "localhost",
+    "port": 21050,
+    "schema": "default",
+    "login": "",
+    "password": "",
+    "extra": {}
+  },
+  {
+    "connection_id": "duckdb_default", 
+    "conn_type": "duckdb_file",
+    "description": "Default DuckDB connection for DAG Builder",
+    "host": "",
+    "port": null,
+    "schema": "duckdb_data.duckdb",
+    "login": "",
+    "password": "",
+    "extra": "{\"read_only\": \"false\"}"
+  },
+  {
+    "connection_id": "duckdb_memory",
+    "conn_type": "duckdb_memory", 
+    "description": "In-memory DuckDB connection for DAG Builder",
+    "host": "",
+    "port": null,
+    "schema": "",
+    "login": "",
+    "password": "",
+    "extra": "{}"
+  }
+]

@@ -8,7 +8,7 @@ dag_id: "example_pipeline"
 airflow_conn_id: "impala_conn"
 
 # Your GraphQL API endpoint (must accept cursor + since variables)
-api_url: "https://api.example.com/graphql"
+api_url: "https://api-eu-west-2.hygraph.com/v2/cktmv9n8g0f0d01z6c8z7c9xw/master"
 
 # The target table name for dlt (used as the resource name)
 # This will create/merge into this table in Impala.
@@ -16,16 +16,11 @@ table_name: "example_table"
 
 # GraphQL query (must return `nodes` + `pageInfo` for pagination)
 graphql_query: |
-  query($cursor: String, $since: DateTime!) {
-    analytics(cursor: $cursor, since: $since) {
-      nodes {
-        id
-        updated_at
-        # ... your fields ...
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+  {
+    movies(first: 5) {
+      title
+      slug
+      imdbId
     }
   }
+

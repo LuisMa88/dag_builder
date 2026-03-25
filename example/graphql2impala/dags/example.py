@@ -16,5 +16,5 @@ with DAG(
     DltGraphqlToImpalaOperator(
         task_id="run_ingestion",
         # Use the included example config file
-        config_path="/path/to/dag_builder/example/config.yaml",
+        config_path="config.yaml",
     )

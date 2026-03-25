@@ -1,7 +1,7 @@
 """Configuration handling for the dag_builder pipeline."""
 
 import os
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import yaml
 from pydantic import BaseModel, HttpUrl, ValidationError
@@ -27,8 +27,18 @@ class PipelineSchema(BaseModel):
     airflow_conn_id: str
     table_name: str
 
-    # GraphQL Specifics
-    graphql_query: str
+    # GraphQL Specifics (optional for REST API use)
+    graphql_query: Optional[str] = None
+    
+    # REST API Specifics (optional)
+    api_params: Optional[Dict[str, Any]] = {}
+    api_headers: Optional[Dict[str, str]] = {}
+    pagination_type: Optional[str] = "offset"
+    
+    # DuckDB Specifics (optional)
+    duckdb_config: Optional[Dict[str, Any]] = {}
+    
+    # Common settings
     incremental_cursor: str = "updated_at"
 
 class PipelineConfig:  # pylint: disable=too-few-public-methods
@@ -67,6 +77,6 @@ class PipelineConfig:  # pylint: disable=too-few-public-methods
             logger.error("Missing APP_API_TOKEN environment variable")
             raise EnvironmentError("Missing APP_API_TOKEN")
 
-    def get(self, key):
+    def get(self, key, default=None):
         """Helper to access validated attributes."""
-        return getattr(self.model, key)
+        return getattr(self.model, key, default)

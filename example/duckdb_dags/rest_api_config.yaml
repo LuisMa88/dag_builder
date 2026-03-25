@@ -1,0 +1,33 @@
+# Example: REST API to DuckDB Data Pipeline
+
+dag_id: "rest_api_duckdb_pipeline"
+airflow_conn_id: "duckdb_conn"  # Optional
+
+# Your REST API endpoint
+api_url: "https://jsonplaceholder.typicode.com/posts"
+
+# The target table name for dlt
+table_name: "posts"
+
+# REST API specific settings
+api_params:
+  userId: 1
+
+api_headers:
+  Content-Type: "application/json"
+  User-Agent: "dag_builder/1.0"
+
+pagination_type: "offset"
+
+# DuckDB specific settings
+duckdb_config:
+  database_path: "posts_data.duckdb"  # File-based database
+  read_only: false
+  # memory: true  # Alternative: in-memory database
+
+# Common settings
+incremental_cursor: "updated_at"
+task_id: "ingest_posts_to_duckdb"
+schedule: "@hourly"
+start_date: "2024-01-01"
+catchup: false

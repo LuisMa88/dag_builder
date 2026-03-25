@@ -1,0 +1,28 @@
+# Example REST API pipeline config for dag_builder
+
+# Airflow/DAG metadata
+dag_id: "rest_api_pipeline"
+airflow_conn_id: "impala_conn"
+
+# Your REST API endpoint
+api_url: "https://jsonplaceholder.typicode.com/posts"
+
+# The target table name for dlt (used as the resource name)
+table_name: "posts"
+
+# REST API specific settings
+api_params:
+  userId: 1  # Example query parameter
+
+api_headers:
+  Content-Type: "application/json"
+  User-Agent: "dag_builder/1.0"
+
+pagination_type: "offset"  # Options: "offset", "page", "cursor"
+
+# Common settings
+incremental_cursor: "updated_at"  # Field to use for incremental loading
+task_id: "ingest_posts"
+schedule: "@daily"
+start_date: "2024-01-01"
+catchup: false

@@ -2,7 +2,7 @@ version: '3.8'
 
 x-airflow-common:
   &airflow-common
-  image: apache/airflow:2.9.2-python3.11
+  image: dag_builder-airflow:latest
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -16,6 +16,10 @@ x-airflow-common:
     # Enable DAG Builder specific settings
     AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
     AIRFLOW__CORE__PLUGINS_FOLDER: '/opt/airflow/plugins'
+    # Reduce concurrency to 1
+    AIRFLOW__CORE__PARALLELISM: '1'
+    AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG: '1'
+    AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG: '1'
     # Environment variables for dag_builder
     APP_API_TOKEN: ${APP_API_TOKEN:-your_api_token_here}
     DAG_BUILDER_LOG_FILE: /opt/airflow/logs/dag_builder.log

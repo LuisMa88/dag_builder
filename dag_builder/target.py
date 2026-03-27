@@ -57,9 +57,9 @@ class DuckDBTarget:  # pylint: disable=too-few-public-methods
             
             # Add read-only flag if specified
             if self.read_only:
-                uri = f"duckdb:///{db_path}?read_only=true"
+                uri = f"duckdb://{db_path}?read_only=true"
             else:
-                uri = f"duckdb:///{db_path}"
+                uri = f"duckdb://{db_path}"
             
             logger.info("Generated DuckDB file URI: %s (read_only=%s)", db_path, self.read_only)
         else:

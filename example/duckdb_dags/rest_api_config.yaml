@@ -12,6 +12,7 @@ table_name: "posts"
 # REST API specific settings
 api_params:
   userId: 1
+  _limit: 100  # Limit to 100 records to prevent infinite pagination
 
 api_headers:
   Content-Type: "application/json"

@@ -11,5 +11,7 @@ dependencies = [
     "pyyaml",
     "requests",
     "apache-airflow",
-    "pylint"
+    "pylint",
+    "duckdb", 
+    "pandas"
 ]

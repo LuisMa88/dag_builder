@@ -13,9 +13,13 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__CORE__DAGS_FOLDER: '/opt/airflow/dags'
       AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+      AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/logs
+      AIRFLOW__LOGGING__REMOTE_LOGGING: False
       # DAG Builder environment variables
       APP_API_TOKEN: ${APP_API_TOKEN:-your_api_token_here}
       DAG_BUILDER_LOG_FILE: /opt/airflow/logs/dag_builder.log
+     
+
     ports:
       - 8080:8080
     volumes:

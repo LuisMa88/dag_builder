@@ -88,10 +88,12 @@ class RestApiFetcher:  # pylint: disable=too-few-public-methods
         cursor = None
         has_next = True
         since = last_value.start_value
+        total_fetched = 0
+        max_records = self.params.get("_limit", 1000)  # Default max 1000 records
         
-        logger.info("Starting fetch from %s (since=%s)", self.url, since)
+        logger.info("Starting fetch from %s (since=%s, max_records=%s)", self.url, since, max_records)
 
-        while has_next:
+        while has_next and total_fetched < max_records:
             # Prepare request parameters
             request_params = self.params.copy()
             
@@ -102,14 +104,18 @@ class RestApiFetcher:  # pylint: disable=too-few-public-methods
             # Add pagination parameters based on type
             if self.pagination_type == "offset":
                 request_params["offset"] = offset
-                request_params["limit"] = 100  # Default page size
+                # Calculate remaining records needed
+                remaining = max_records - total_fetched
+                request_params["limit"] = min(100, remaining)  # Don't fetch more than needed
             elif self.pagination_type == "page":
                 request_params["page"] = page
-                request_params["per_page"] = 100  # Default page size
+                remaining = max_records - total_fetched
+                request_params["per_page"] = min(100, remaining)  # Don't fetch more than needed
             elif self.pagination_type == "cursor":
                 if cursor:
                     request_params["cursor"] = cursor
-                request_params["limit"] = 100  # Default page size
+                remaining = max_records - total_fetched
+                request_params["limit"] = min(100, remaining)  # Don't fetch more than needed
             
             logger.debug("Requesting %s with params: %s", self.url, request_params)
             response = requests.get(self.url, params=request_params, headers=self.headers)
@@ -151,9 +157,10 @@ class RestApiFetcher:  # pylint: disable=too-few-public-methods
                 records = []
                 has_next = False
 
-            logger.info("Fetched %s records (page=%s, offset=%s)", len(records), page, offset)
+            logger.info("Fetched %s records (page=%s, offset=%s, total=%s/%s)", len(records), page, offset, total_fetched + len(records), max_records)
             if records:
                 yield records
+                total_fetched += len(records)
 
             # Update pagination for next iteration
             if self.pagination_type == "offset":
@@ -163,5 +170,5 @@ class RestApiFetcher:  # pylint: disable=too-few-public-methods
             # cursor is updated in the loop above for cursor-based pagination
             
             # Safety check to prevent infinite loops
-            if not records:
+            if not records or total_fetched >= max_records:
                 break

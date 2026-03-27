@@ -94,10 +94,10 @@ class DltGraphqlToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
+        # For DuckDB, pass only the destination name
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            credentials=target.get_uri(),
             dataset_name="staging"
         )
 
@@ -155,10 +155,10 @@ class DltRestApiToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
+        # For DuckDB, pass only the destination name
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            credentials=target.get_uri(),
             dataset_name="staging"
         )
 

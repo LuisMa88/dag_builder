@@ -12,6 +12,7 @@ table_name: "posts"
 # REST API specific settings
 api_params:
   userId: 1
+  _limit: 100  # Limit to 100 records to prevent infinite pagination
 
 api_headers:
   Content-Type: "application/json"
@@ -21,7 +22,7 @@ pagination_type: "offset"
 
 # DuckDB specific settings
 duckdb_config:
-  database_path: "posts_data.duckdb"  # File-based database
+  database_path: "/opt/airflow/dags/posts_data.duckdb"  # File-based database
   read_only: false
   # memory: true  # Alternative: in-memory database
 

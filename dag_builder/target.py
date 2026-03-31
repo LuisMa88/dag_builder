@@ -1,7 +1,10 @@
 """Helpers to build connection URIs for Impala and DuckDB targets."""
 
 import os
-from airflow.hooks.base_hook import BaseHook
+try:
+    from airflow.hooks.base import BaseHook
+except ImportError:
+    from airflow.hooks.base_hook import BaseHook
 
 from .logger import DagBuilderLogger
 

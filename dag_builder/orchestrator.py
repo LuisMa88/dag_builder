@@ -124,18 +124,20 @@ class DltGraphqlToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
-        # For DuckDB, pass the database path directly to pipeline
+        # For DuckDB, set the database path as environment variable
         db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
         # Use absolute path and ensure directory exists
         import os
         abs_db_path = os.path.abspath(db_path)
         os.makedirs(os.path.dirname(abs_db_path), exist_ok=True)
         
+        # Set DuckDB database path as environment variable for DLT
+        os.environ['DUCKDB_DATABASE'] = abs_db_path
+        
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            dataset_name="staging",
-            credentials=f"duckdb:///{abs_db_path}"
+            dataset_name="staging"
         )
 
         # 4. Resource Definition with Incremental Loading
@@ -222,18 +224,20 @@ class DltRestApiToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
-        # For DuckDB, pass the database path directly to pipeline
+        # For DuckDB, set the database path as environment variable
         db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
         # Use absolute path and ensure directory exists
         import os
         abs_db_path = os.path.abspath(db_path)
         os.makedirs(os.path.dirname(abs_db_path), exist_ok=True)
         
+        # Set DuckDB database path as environment variable for DLT
+        os.environ['DUCKDB_DATABASE'] = abs_db_path
+        
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            dataset_name="staging",
-            credentials=f"duckdb:///{abs_db_path}"
+            dataset_name="staging"
         )
 
         # 4. Resource Definition with Incremental Loading

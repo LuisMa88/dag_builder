@@ -22,7 +22,7 @@ pagination_type: "offset"
 
 # DuckDB specific settings
 duckdb_config:
-  database_path: "/opt/airflow/dags/posts_data.duckdb"  # File-based database
+  database_path: "posts_data.duckdb"  # File-based database
   read_only: false
   # memory: true  # Alternative: in-memory database
 

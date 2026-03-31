@@ -45,9 +45,10 @@ COPY example /opt/airflow/example
 RUN mkdir -p /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins
 
 # Copy DAG examples to dags folder
-RUN cp -r /opt/airflow/example/graphql2impala/dags/* /opt/airflow/dags/ && \
-    cp -r /opt/airflow/example/rest_api_dags/* /opt/airflow/dags/ && \
-    cp -r /opt/airflow/example/duckdb_dags/* /opt/airflow/dags/ || true
+RUN cp -r /opt/airflow/example/rest_api_dags/* /opt/airflow/dags/ || true
+    # && \
+    # cp -r /opt/airflow/example/graphql2impala/dags/* /opt/airflow/dags/ && \     
+    # cp -r /opt/airflow/example/duckdb_dags/* /opt/airflow/dags/ || true
 
 # Set ownership (check existing user/group)
 USER root

@@ -56,6 +56,36 @@ class DltGraphqlToImpalaOperator(BaseOperator):
         load_info = pipeline.run(resource)
         logger.info("Load complete: %s", load_info)
         self.log.info(f"Load complete: {load_info}")
+        
+        # Log data ingestion details
+        try:
+            # Connect to database to verify data was loaded
+            import duckdb
+            db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
+            logger.info(f"🔍 Connecting to database: {db_path}")
+            conn = duckdb.connect(db_path)
+            
+            # Check if table exists and get record count
+            tables = conn.execute("SHOW TABLES").fetchall()
+            if tables:
+                table_name = cfg.get('table_name')
+                count_result = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchall()
+                logger.info(f"✅ Successfully loaded {count_result[0][0]} records into table '{table_name}'")
+                
+                # Log sample data
+                sample_data = conn.execute(f"SELECT * FROM {table_name} LIMIT 3").fetchall()
+                logger.info(f"📋 Sample data: {sample_data}")
+                
+                # Log table schema
+                schema = conn.execute(f"DESCRIBE {table_name}").fetchall()
+                logger.info(f"🏗️ Table schema: {schema}")
+            else:
+                logger.warning("⚠️ No tables found in database after load")
+            
+            conn.close()
+        except Exception as e:
+            logger.error(f"❌ Error verifying loaded data: {e}")
+        
         return str(load_info)
 
 
@@ -94,11 +124,18 @@ class DltGraphqlToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
-        # For DuckDB, pass only the destination name
+        # For DuckDB, pass the database path directly to pipeline
+        db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
+        # Use absolute path and ensure directory exists
+        import os
+        abs_db_path = os.path.abspath(db_path)
+        os.makedirs(os.path.dirname(abs_db_path), exist_ok=True)
+        
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            dataset_name="staging"
+            dataset_name="staging",
+            credentials=f"duckdb:///{abs_db_path}"
         )
 
         # 4. Resource Definition with Incremental Loading
@@ -115,6 +152,36 @@ class DltGraphqlToDuckDBOperator(BaseOperator):
         load_info = pipeline.run(resource)
         logger.info("Load complete: %s", load_info)
         self.log.info(f"Load complete: {load_info}")
+        
+        # Log data ingestion details
+        try:
+            # Connect to database to verify data was loaded
+            import duckdb
+            db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
+            logger.info(f"🔍 Connecting to database: {db_path}")
+            conn = duckdb.connect(db_path)
+            
+            # Check if table exists and get record count
+            tables = conn.execute("SHOW TABLES").fetchall()
+            if tables:
+                table_name = cfg.get('table_name')
+                count_result = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchall()
+                logger.info(f"✅ Successfully loaded {count_result[0][0]} records into table '{table_name}'")
+                
+                # Log sample data
+                sample_data = conn.execute(f"SELECT * FROM {table_name} LIMIT 3").fetchall()
+                logger.info(f"📋 Sample data: {sample_data}")
+                
+                # Log table schema
+                schema = conn.execute(f"DESCRIBE {table_name}").fetchall()
+                logger.info(f"🏗️ Table schema: {schema}")
+            else:
+                logger.warning("⚠️ No tables found in database after load")
+            
+            conn.close()
+        except Exception as e:
+            logger.error(f"❌ Error verifying loaded data: {e}")
+        
         return str(load_info)
 
 
@@ -155,11 +222,18 @@ class DltRestApiToDuckDBOperator(BaseOperator):
 
         # 3. dlt Pipeline Initialization
         logger.info("Initializing dlt pipeline for dag_id=%s", cfg.get('dag_id'))
-        # For DuckDB, pass only the destination name
+        # For DuckDB, pass the database path directly to pipeline
+        db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
+        # Use absolute path and ensure directory exists
+        import os
+        abs_db_path = os.path.abspath(db_path)
+        os.makedirs(os.path.dirname(abs_db_path), exist_ok=True)
+        
         pipeline = dlt.pipeline(
             pipeline_name=cfg.get('dag_id'),
             destination="duckdb",
-            dataset_name="staging"
+            dataset_name="staging",
+            credentials=f"duckdb:///{abs_db_path}"
         )
 
         # 4. Resource Definition with Incremental Loading
@@ -176,4 +250,34 @@ class DltRestApiToDuckDBOperator(BaseOperator):
         load_info = pipeline.run(resource)
         logger.info("Load complete: %s", load_info)
         self.log.info(f"Load complete: {load_info}")
+        
+        # Log data ingestion details
+        try:
+            # Connect to database to verify data was loaded
+            import duckdb
+            db_path = target_config.get('database_path', '/opt/airflow/data/posts_data.duckdb')
+            logger.info(f"🔍 Connecting to database: {db_path}")
+            conn = duckdb.connect(db_path)
+            
+            # Check if table exists and get record count
+            tables = conn.execute("SHOW TABLES").fetchall()
+            if tables:
+                table_name = cfg.get('table_name')
+                count_result = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchall()
+                logger.info(f"✅ Successfully loaded {count_result[0][0]} records into table '{table_name}'")
+                
+                # Log sample data
+                sample_data = conn.execute(f"SELECT * FROM {table_name} LIMIT 3").fetchall()
+                logger.info(f"📋 Sample data: {sample_data}")
+                
+                # Log table schema
+                schema = conn.execute(f"DESCRIBE {table_name}").fetchall()
+                logger.info(f"🏗️ Table schema: {schema}")
+            else:
+                logger.warning("⚠️ No tables found in database after load")
+            
+            conn.close()
+        except Exception as e:
+            logger.error(f"❌ Error verifying loaded data: {e}")
+        
         return str(load_info)

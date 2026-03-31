@@ -28,6 +28,7 @@ x-airflow-common:
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ./example:/opt/airflow/example
+    - ./data:/opt/airflow/data
   depends_on:
     &airflow-common-depends-on
     postgres:

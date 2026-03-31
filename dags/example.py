@@ -27,9 +27,7 @@ with DAG(
 ) as rest_api_dag:
 
     # REST API to DuckDB example
-
     rest_api_to_duckdb = DltRestApiToDuckDBOperator(
         task_id="ingest_rest_api_to_duckdb",
         config_path="./rest_api_config.yaml",
     )
-

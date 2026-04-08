@@ -145,3 +145,4 @@ venv/*
 PRINTABLE.md
 PRINTABLE.pdf
 scripts/*
+*.duckdb

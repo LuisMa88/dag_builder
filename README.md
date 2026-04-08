@@ -1,12 +1,12 @@
 # 🛠️ dag_builder
 
-A modular framework to generate **Apache Airflow** DAGs that move data from **GraphQL APIs** to **Cloudera Impala** using **dlt**.
+A Python package for building data pipelines that move data from **REST APIs** to **DuckDB** using **dlt**.
 
-This project provides an Airflow `BaseOperator` that:
+This package provides:
 
 - Reads configuration from a **YAML file**
-- Fetches incremental data from a **GraphQL API**
-- Loads the results into **Cloudera Impala** using **dlt** and SQLAlchemy
+- Fetches incremental data from **REST APIs**
+- Loads the results into **DuckDB** using **dlt**
 
 ---
 
@@ -18,36 +18,24 @@ This project provides an Airflow `BaseOperator` that:
 pip install .
 ```
 
-> ⚠️ This package depends on Airflow and dlt. Install in a compatible environment (e.g., a dedicated virtualenv).
+> ⚠️ This package depends on dlt. Install in a compatible environment (e.g., a dedicated virtualenv).
 
 ### 2) Create a config YAML
 
-Create a `config.yaml` file (or point to your own path via `PIPELINE_CONFIG_PATH`) with the following required fields:
+Create a `config.yaml` file with the following fields:
 
 ```yaml
 # config.yaml
 
-dag_id: "my_pipeline"
-airflow_conn_id: "impala_conn"
-api_url: "https://my-graphql-api.example.com/graphql"
-table_name: "my_table"
-graphql_query: |
-  query($cursor: String, $since: DateTime!) {
-    analytics(cursor: $cursor, since: $since) {
-      nodes {
-        id
-        updated_at
-        ...
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-```
+pipeline_name: "my_pipeline"
+api_url: "https://jsonplaceholder.typicode.com/posts"
+table_name: "posts"
+incremental_cursor: "id"
 
-> The code expects the GraphQL response to contain a `nodes` list and a `pageInfo` object.
+# Optional: DuckDB configuration
+duckdb_config:
+  database_path: "./posts_data.duckdb"
+```
 
 ### 3) Set your API token
 
@@ -61,99 +49,51 @@ export APP_API_TOKEN="<your_token>"
 
 ---
 
-## 🐳 Docker Setup
-
-### Quick Start with Docker
-
-```bash
-# Production setup (PostgreSQL + Redis + Celery)
-docker-compose up -d
-
-# Development setup (SQLite only)
-docker-compose -f docker-compose.simple.yml up -d
-
-# Access Airflow
-# URL: http://localhost:8080
-# Username: admin
-# Password: admin
-```
-
-### Setup Script
-
-```bash
-# Linux/Mac
-chmod +x setup.sh && ./setup.sh
-
-# Windows
-setup.bat
-```
-
-### Services
-
-| Service | Port | Description |
-|---------|------|-------------|
-| Airflow Web UI | 8080 | Main Airflow interface |
-| Flower | 5555 | Celery monitoring |
-| PostgreSQL | 5432 | Production database |
-| Redis | 6379 | Message broker |
-
-For detailed Docker instructions, see [docker/README.md](docker/README.md).
-
----
-
 ## 🧩 Configuration
-
-### Config file location
-
-The operator looks for configuration in this order:
-
-1. The path passed to the operator via `config_path`
-2. The `PIPELINE_CONFIG_PATH` environment variable
-3. A default `config.yaml` located next to the package code (`dag_builder/config.yaml`)
 
 ### Config fields
 
 Required fields (validated via Pydantic):
 
-- `dag_id` – Airflow DAG id and dlt pipeline name
-- `airflow_conn_id` – Airflow connection id for Impala
-- `api_url` – The GraphQL endpoint
+- `pipeline_name` – Pipeline name for dlt
+- `api_url` – The REST API endpoint
 - `table_name` – The target table name (used for the dlt resource)
-- `graphql_query` – The GraphQL query string
 
 Optional fields (with defaults):
 
 - `task_id` – defaults to `ingest_api_data`
-- `schedule` – defaults to `@daily`
-- `start_date` – defaults to `2024-01-01`
-- `catchup` – defaults to `false`
 - `incremental_cursor` – defaults to `updated_at`
+- `duckdb_config` – DuckDB database configuration
 
 ---
 
-## ✅ Usage (Airflow DAG)
+## ✅ Usage (Python Scripts)
 
-Use the operator in your Airflow DAG like this:
+Use the package in your Python scripts like this:
 
 ```python
-from datetime import datetime
+import os
+from dag_builder import DataPipeline, run_pipeline
 
-from airflow import DAG
-from dag_builder.orchestrator import DltGraphqlToImpalaOperator
+# Set environment variable for API token
+os.environ['APP_API_TOKEN'] = 'your_token_here'
 
-with DAG(
-    dag_id="marketing_data_ingest",
-    start_date=datetime(2024, 1, 1),
-    schedule_interval="@daily",
-) as dag:
+# Option 1: Use the DataPipeline class
+pipeline = DataPipeline('config.yaml')
+result = pipeline.run_rest_api_to_duckdb()
+print(f"Pipeline completed: {result}")
 
-    DltGraphqlToImpalaOperator(
-        task_id="run_ingestion",
-        config_path="/path/to/config.yaml",
-    )
+# Option 2: Use the convenience function
+result = run_pipeline('config.yaml', 'rest_api_to_duckdb')
+print(f"Pipeline completed: {result}")
 ```
 
-> 🔧 Ensure your Airflow connection (e.g., `impala_conn`) is configured and points at your Impala host.
+### Example Usage
+
+See the `examples/` directory for complete working examples:
+
+- `simple_rest_api_example.py` – Basic usage
+- `advanced_usage_example.py` – Advanced patterns and custom configurations
 
 ---
 
@@ -167,9 +107,9 @@ pytest
 
 ## 📦 Project Layout
 
-- `dag_builder/` – core package code
-- `example/` – sample Airflow DAG
-- `tests/` – unit tests
+- `dag_builder/` - core package code
+- `examples/` - Python usage examples
+- `example/` - configuration files
 
 ---
 

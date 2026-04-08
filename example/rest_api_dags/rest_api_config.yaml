@@ -1,0 +1,37 @@
+# REST API to DuckDB Pipeline Configuration
+# This configuration defines how to fetch data from a REST API and store it in DuckDB
+
+# API Configuration
+api_url: "https://jsonplaceholder.typicode.com/posts"
+table_name: "posts"
+
+# API Parameters (optional)
+api_params:
+  _limit: 100
+
+# API Headers (optional)
+api_headers:
+  Content-Type: "application/json"
+  User-Agent: "dag_builder/1.0"
+
+# Pagination Configuration
+pagination_type: "offset"  # Options: "offset", "cursor", "none"
+
+# Incremental Loading Configuration
+incremental_cursor: "id"  # Field to track for incremental updates
+
+# DuckDB Configuration
+duckdb_config:
+  destination_name: "./posts_data" # DLT Ignores COnfiguration for database path, uses Pipeline name as database name
+  dataset_name: "ingest_api_data"
+
+# Pipeline Configuration
+pipeline_name: "rest_api_to_duckdb_pipeline"
+task_id: "ingest_api_data"
+
+
+# Write Disposition
+write_disposition: "merge"  # Options: "append", "replace", "merge"
+
+# Primary Key for Merging
+primary_key: "id"

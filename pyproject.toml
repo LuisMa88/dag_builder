@@ -2,16 +2,18 @@
 name = "dag_builder"
 version = "0.1.0"
 dependencies = [
+    "pydantic>=2.0.0",
+    "dlt[sqlalchemy]",
+    "pyyaml",
+    "requests",
+    "duckdb", 
+    "pandas"
+]
+
+[project.optional-dependencies]
+dev = [
     "pytest",
     "pytest-cov",
     "pytest-mock",
-    "pydantic>=2.0.0",
-    "dlt[sqlalchemy]",
-    "impyla",
-    "pyyaml",
-    "requests",
-    "apache-airflow",
-    "pylint",
-    "duckdb", 
-    "pandas"
+    "pylint"
 ]

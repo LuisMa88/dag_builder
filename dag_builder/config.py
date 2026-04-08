@@ -15,20 +15,13 @@ logger = DagBuilderLogger.get_logger(__name__)
 class PipelineSchema(BaseModel):
     """Pydantic schema for pipeline configuration."""
 
-    # Airflow/DAG Metadata
-    dag_id: str
+    # Pipeline Metadata
+    pipeline_name: str
     task_id: str = "ingest_api_data"
-    schedule: str = "@daily"
-    start_date: str = "2024-01-01"
-    catchup: bool = False
 
     # Connection & API Details
     api_url: HttpUrl
-    airflow_conn_id: str
     table_name: str
-
-    # GraphQL Specifics (optional for REST API use)
-    graphql_query: Optional[str] = None
     
     # REST API Specifics (optional)
     api_params: Optional[Dict[str, Any]] = {}
@@ -69,7 +62,7 @@ class PipelineConfig:  # pylint: disable=too-few-public-methods
             logger.error("Invalid configuration in %s: %s", self.config_path, e)
             raise ValueError(f"Invalid Configuration in {self.config_path}:\n{e}") from e
 
-        logger.info("Loaded config for dag_id=%s", self.model.dag_id)
+        logger.info("Loaded config for pipeline_name=%s", self.model.pipeline_name)
 
         # 3. Handle Secrets (keep out of YAML)
         self.api_token = os.getenv('APP_API_TOKEN')

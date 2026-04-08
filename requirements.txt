@@ -1,0 +1,13 @@
+# Core dependencies for dag_builder
+pydantic>=2.0.0
+dlt[sqlalchemy]
+pyyaml
+requests
+duckdb
+pandas
+
+# Optional dependencies for development
+pytest
+pytest-cov
+pytest-mock
+pylint

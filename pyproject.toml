@@ -7,7 +7,9 @@ dependencies = [
     "pyyaml",
     "requests",
     "duckdb", 
-    "pandas"
+    "pandas",
+    "dbt-core",
+    "dbt-duckdb"
 ]
 
 [project.optional-dependencies]

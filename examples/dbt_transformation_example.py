@@ -32,8 +32,9 @@ def example_with_project_dir():
     """Example 2: Specify custom dbt project directory."""
     print("=== Example 2: Custom project directory ===\n")
     
+    project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "transformations"))
     dbt_config = {
-        "project_dir": "/path/to/my/dbt/project",
+        "project_dir": project_dir,
         "target": "dev",
         "threads": 4
     }
@@ -49,6 +50,7 @@ def example_with_project_dir():
         print(f"  Return code: {result['return_code']}\n")
         
     except Exception as e:
+        print(e)
         print(f"✗ Error: {e}\n")
 
 
@@ -172,13 +174,13 @@ if __name__ == "__main__":
     # Uncomment the examples you want to run:
     
     # example_basic_run()
-    # example_with_project_dir()
+    example_with_project_dir()
     # example_with_model_selection()
     # example_with_variables()
     # example_run_with_working_dir_override()
     # example_full_pipeline()
     
-    print("\nTo use these examples:")
-    print("1. Install dbt: pip install dbt-core dbt-<adapter>")
-    print("2. Update paths to point to your actual dbt projects")
-    print("3. Uncomment the examples you want to run")
+    # print("\nTo use these examples:")
+    # print("1. Install dbt: pip install dbt-core dbt-<adapter>")
+    # print("2. Update paths to point to your actual dbt projects")
+    # print("3. Uncomment the examples you want to run")

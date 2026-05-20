@@ -17,7 +17,7 @@ def run_rest_api_pipeline():
         os.path.dirname(__file__),
         '../example/rest_api_dags/rest_api_config.yaml'
     )
-    
+    os.environ['APP_API_TOKEN'] = 'dummy_token_for_public_api'
     if not os.path.exists(config_path):
         print(f"Configuration file not found at {config_path}")
         return

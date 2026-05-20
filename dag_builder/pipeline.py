@@ -2,6 +2,7 @@
 
 import dlt
 import os
+import sys
 import subprocess
 import json
 from typing import Optional, Dict, Any
@@ -282,7 +283,7 @@ class DbtTransformer:
             cmd.append("--debug")
         
         # Add JSON output for structured results
-        cmd.append("--json")
+        cmd.append("--write-json")
         
         return cmd
 

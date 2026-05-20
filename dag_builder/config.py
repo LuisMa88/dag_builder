@@ -34,6 +34,21 @@ class PipelineSchema(BaseModel):
     # Common settings
     incremental_cursor: str = "updated_at"
 
+
+class DbtSchema(BaseModel):
+    """Pydantic schema for dbt transformation configuration."""
+
+    # Dbt Project Settings
+    project_dir: Optional[str] = None  # Path to dbt project, defaults to cwd
+    profiles_dir: Optional[str] = None  # Path to dbt profiles directory
+    select: Optional[str] = None  # dbt model selection (e.g. "my_model" or "+tag:daily")
+    exclude: Optional[str] = None  # Models to exclude
+    target: Optional[str] = None  # dbt target to use
+    threads: Optional[int] = 1  # Number of threads for dbt run
+    vars: Optional[Dict[str, Any]] = {}  # dbt variables
+    debug: Optional[bool] = False  # Enable debug mode
+
+
 class PipelineConfig:  # pylint: disable=too-few-public-methods
     """Loads and validates pipeline configuration from YAML.
 

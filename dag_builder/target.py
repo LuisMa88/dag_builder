@@ -14,7 +14,7 @@ class DuckDBTarget:  # pylint: disable=too-few-public-methods
         """Initialize DuckDB target.
         
         Args:
-            conn_id: Optional Airflow connection ID (for future use)
+            conn_id: Optional connection identifier (currently unused)
             destination_name: Path to DuckDB database file
             memory: Whether to use in-memory database
             read_only: Whether to open database in read-only mode
@@ -50,31 +50,19 @@ class DuckDBTarget:  # pylint: disable=too-few-public-methods
         return uri
 
     @classmethod
-    def from_connection(cls, conn_id, default_path=None):
-        """Create DuckDBTarget from Airflow connection.
+    def from_config(cls, destination_name=None, memory=False, read_only=False):
+        """Create DuckDBTarget from configuration parameters.
         
         Args:
-            conn_id: Airflow connection ID
-            default_path: Default database path if not specified in connection
+            destination_name: Path to DuckDB database file
+            memory: Whether to use in-memory database
+            read_only: Whether to open database in read-only mode
             
         Returns:
             DuckDBTarget instance
         """
-        try:
-            conn = BaseHook.get_connection(conn_id)
-            
-            # Extract connection parameters
-            destination_name = conn.schema or default_path or "duckdb_data.duckdb"
-            memory = conn.conn_type == "duckdb_memory"
-            read_only = conn.extra and conn.extra.get("read_only", False).lower() == "true"
-            
-            return cls(
-                conn_id=conn_id,
-                destination_name=destination_name+".duckdb",
-                memory=memory,
-                read_only=read_only
-            )
-        except Exception as e:
-            logger.warning("Failed to get DuckDB connection %s: %s", conn_id, e)
-            # Fallback to default in-memory database
-            return cls(memory=True)
+        return cls(
+            destination_name=destination_name,
+            memory=memory,
+            read_only=read_only
+        )

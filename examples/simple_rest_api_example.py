@@ -7,11 +7,11 @@ This demonstrates the basic usage without any Airflow dependencies.
 import os
 import sys
 from pathlib import Path
+from dag_builder import DataPipeline
 
 # Add the parent directory to the path so we can import dag_builder
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from dag_builder import run_pipeline
 
 def main():
     """Run a simple REST API to DuckDB pipeline."""
@@ -33,13 +33,8 @@ def main():
     try:
         # Run the pipeline
         print(f"Running pipeline with config: {config_path}")
-        
-        result = run_pipeline(
-            config_path=config_path,
-            pipeline_type="rest_api_to_duckdb",
-            working_dir=os.path.expanduser("~")  # Use home directory for DLT config
-        )
-        
+        pipeline = DataPipeline(config_path=config_path)
+        result = pipeline.run_rest_api_to_duckdb()        
         print("=== Pipeline Results ===")
         print(f"Pipeline Name: {result['pipeline_name']}")
         print(f"Table Name: {result['table_name']}")

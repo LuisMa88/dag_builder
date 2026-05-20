@@ -1,0 +1,8 @@
+default:
+  outputs:
+    dev:
+      type: duckdb
+      path: '../../posts_data.duckdb'
+  target: dev
+
+      
